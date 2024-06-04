@@ -6,13 +6,8 @@
 
 using namespace std;
 
-vector<int> inner, outer;
-
-
 int main() {
     int n; cin >> n;
-    inner.resize(n);
-    outer.resize(n);
 
     vector<pair<int, int>> intervals(n);
     for (auto& [a, b] : intervals)
@@ -23,11 +18,30 @@ int main() {
     for (int i = 0; i < n; i++)
         index[intervals[i]] = i;
 
-    sort(intervals.begin(), intervals.end(), [](const pair<int, int>& a, const pair<int, int>& b) {
-        return a.first < b.first || (a.first == b.first && a.second > b.second);
-    });
+    {;
+        sort(intervals.begin(), intervals.end(), [](const pair<int, int>& a, const pair<int, int>& b) {
+            return a.first > b.first || (a.first == b.first && a.second < b.second);
+        });
+
+        vector<int> outer(n);
+        set<int, greater<>> bounds;
+        for (int i = 0; i < n; i++) {
+            auto [a, b] = intervals[i];
+            auto it = bounds.lower_bound(b);
+            if (it != bounds.end()) outer[index[intervals[i]]] = 1;
+            bounds.insert(b);
+        }
+
+        for (int i = 0; i < n; i++) cout << outer[i] << " ";
+        cout << endl;
+    }
 
     {
+        sort(intervals.begin(), intervals.end(), [](const pair<int, int>& a, const pair<int, int>& b) {
+            return a.first < b.first || (a.first == b.first && a.second > b.second);
+        });
+
+        vector<int> inner(n);
         set<int> bounds;
         for (int i = 0; i < n; i++) {
             auto [a, b] = intervals[i];
@@ -36,26 +50,7 @@ int main() {
             bounds.insert(b);
         }
 
-        sort(intervals.begin(), intervals.end(), [](const pair<int, int>& a, const pair<int, int>& b) {
-            return a.first > b.first || (a.first == b.first && a.second < b.second);
-        });
+        for (int i = 0; i < n; i++) cout << inner[i] << " ";
+        cout << endl;
     }
-
-
-    {
-        set<int, greater<>> bounds;
-        for (int i = 0; i < n; i++) {
-            auto [a, b] = intervals[i];
-            auto it = bounds.lower_bound(b);
-            if (it != bounds.end()) outer[index[intervals[i]]] = 1;
-            bounds.insert(b);
-        }
-    }
-
-    for (int i = 0; i < n; i++) cout << outer[i] << " ";
-    cout << endl;
-
-    for (int i = 0; i < n; i++) cout << inner[i] << " ";
-    cout << endl;
-
 }
