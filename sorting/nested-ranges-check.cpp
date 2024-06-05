@@ -18,7 +18,7 @@ int main() {
     for (int i = 0; i < n; i++)
         index[intervals[i]] = i;
 
-    {;
+    {
         sort(intervals.begin(), intervals.end(), [](const pair<int, int>& a, const pair<int, int>& b) {
             return a.first > b.first || (a.first == b.first && a.second < b.second);
         });
